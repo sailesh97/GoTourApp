@@ -1,0 +1,3 @@
+1. Creates a user without checking If there's already a user wih same email id
+
+2. Unable to extract the hashic logic to a utility file.
