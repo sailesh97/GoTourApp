@@ -6,20 +6,21 @@ require('dotenv').config()
 
 import { CustomerSchema } from '../models/customer-model';
 import { TripSchema } from '../models/trip-model';
-// import { hash } from '../utilities/hashing';
+import { hash } from '../utilities/hashing';
 
 const Customer = mongoose.model('user', CustomerSchema);
-const Trip = mongoose.model('tripDetails', TripSchema);
+const Trip = mongoose.model('tripdetails', TripSchema);
 
-const SALT_ROUNDS = 10;
-async function hash(password) {
-    // console.log("Password", password, SALT_ROUNDS)
-    const salt = await bcrypt.genSalt(SALT_ROUNDS);
-    // console.log("SALT----", salt);
-    const hashedPassword = await bcrypt.hash(password, salt);
-    return hashedPassword;
-}
+// const SALT_ROUNDS = 10;
+// async function hash(password) {
+//     // console.log("Password", password, SALT_ROUNDS)
+//     const salt = await bcrypt.genSalt(SALT_ROUNDS);
+//     // console.log("SALT----", salt);
+//     const hashedPassword = await bcrypt.hash(password, salt);
+//     return hashedPassword;
+// }
 // compare password with hashed password
+
 async function compare(password, hashedPassword) {
     const match = await bcrypt.compare(password, hashedPassword);
     return match;
