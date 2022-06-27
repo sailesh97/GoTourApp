@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 require('dotenv').config()
 
 
-import { CustomerSchema } from '../models/customer-model';
+import CustomerSchema from '../models/customer-model';
 import { TripSchema } from '../models/trip-model';
 import { hash } from '../utilities/hashing';
 
@@ -36,6 +36,12 @@ export const addCustomer = async (req, res) => {
         let returnedCustomer = await newCustomer.save();
         res.send(returnedCustomer);
     } catch (err) {
+        if(err.message){
+            res.send({
+                error: err._message,
+                message: err.message
+            })
+        }
         res.send(err);
     }
 }
