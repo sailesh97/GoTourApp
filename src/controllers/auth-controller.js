@@ -9,17 +9,7 @@ import { TripSchema } from '../models/trip-model';
 import { hash } from '../utilities/hashing';
 
 const Customer = mongoose.model('user', CustomerSchema);
-const Trip = mongoose.model('tripdetails', TripSchema);
-
-// const SALT_ROUNDS = 10;
-// async function hash(password) {
-//     // console.log("Password", password, SALT_ROUNDS)
-//     const salt = await bcrypt.genSalt(SALT_ROUNDS);
-//     // console.log("SALT----", salt);
-//     const hashedPassword = await bcrypt.hash(password, salt);
-//     return hashedPassword;
-// }
-// compare password with hashed password
+const Trip = mongoose.model('tripdetailsnew', TripSchema);
 
 async function compare(password, hashedPassword) {
     const match = await bcrypt.compare(password, hashedPassword);
@@ -54,7 +44,7 @@ export const signIn = async (req, res) => {
         if (validateCustomer) {
             const user = req.body;
             const token = jwt.sign({user}, process.env.JWT_SECRET);
-            res.send({ message: 'User Validated', token: token });
+            res.send({ message: 'User Validated', token: token, customer: returnedCustomer });
         } else{
             res.send({ message: "Sorry not validate credentials :" + req.body.email });
         }
@@ -84,8 +74,9 @@ export const getProtectedInfo = (req, res) => {
             console.log(err);
             res.sendStatus(403);
         } else{
-
+            // console.log("TripData--", data)
             getAllTrips(res);
+            
             // res.json({
             //     msg: "This is a protected route",
             //     data: data
@@ -99,7 +90,7 @@ function getAllTrips(res) {
         if (err) {
             res.send(err);
         }
-        console.log("Protected  Response", err)
+        console.log("Protected  Response", err, tripPackagedProvided)
         res.json(tripPackagedProvided);
     });
 }

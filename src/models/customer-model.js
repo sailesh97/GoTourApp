@@ -10,25 +10,17 @@ const CustomerSchema = new Schema(
             required: "Please enter your fullname.",
             unique: true
         },
-        phone: {
-            type: Number
-        },
+        phone: Number,
         email: {
             type: String,
             unique: true
-            // required: true,
-            // dropDups: true
         },
-        address: {
-            type: String
-        },
+        address: String,
         aadharNo: {
             type: String,
             unique: true
         },
-        password: {
-            type: String
-        },
+        password: String,
         creationDate: {
             type: Date,
             default: Date.now
