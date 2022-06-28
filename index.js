@@ -14,6 +14,13 @@ const PORT = +process.env.PORT;
 mongoose.Promise = global.Promise;
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true });
 
+const db = mongoose.connection;
+db.on("error", console.error.bind(console, "connection error: "));
+db.once("open", function () {
+  console.log("Connected successfully");
+});
+
+
 // configuration
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json({type:"application/json"}));
