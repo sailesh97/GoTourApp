@@ -5,11 +5,12 @@ require('dotenv').config()
 
 
 import CustomerSchema from '../models/customer-model';
-import { TripSchema } from '../models/trip-model';
+// import { TripSchema } from '../models/trip-model';
 import { hash } from '../utilities/hashing';
+
 const userCollectionName = process.env.USER_COLLECTION_NAME;
 const Customer = mongoose.model(userCollectionName, CustomerSchema);
-const Trip = mongoose.model('tripdetailsnew', TripSchema);
+// const Trip = mongoose.model('tripdetailsnew', TripSchema);
 
 async function compare(password, hashedPassword) {
     const match = await bcrypt.compare(password, hashedPassword);
@@ -19,7 +20,6 @@ async function compare(password, hashedPassword) {
 // add customer - with encryption
 export const addCustomer = async (req, res) => {
     let customer = req.body;
-    // console.log("-------------------------------------Customer-------------------------------------/n",customer)
     customer.password = await hash(customer.password);
     let newCustomer = new Customer(customer);
     try {
@@ -31,8 +31,9 @@ export const addCustomer = async (req, res) => {
                 error: err._message,
                 message: err.message
             })
+        } else{
+            res.send(err);
         }
-        res.send(err);
     }
 }
 
@@ -68,24 +69,18 @@ export const ensureToken = (req, res, next) => {
     }
 }
 
-export const getProtectedInfo = (req, res) => {
+/* export const getProtectedInfo = (req, res) => {
     jwt.verify(req.token, process.env.JWT_SECRET, (err, data) => {
         if(err){
             console.log(err);
             res.sendStatus(403);
         } else{
-            // console.log("TripData--", data)
             getAllTrips(res);
-            
-            // res.json({
-            //     msg: "This is a protected route",
-            //     data: data
-            // })
         }
     });
-}
+} */
 
-function getAllTrips(res) {
+/* function getAllTrips(res) {
     Trip.find({}, (err, tripPackagedProvided) => {
         if (err) {
             res.send(err);
@@ -94,7 +89,7 @@ function getAllTrips(res) {
         res.json(tripPackagedProvided);
     });
 }
-
+ */
 export const home = (req, res) => {
     res.json({ "message": "Welcome from Express" });
 }

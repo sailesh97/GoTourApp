@@ -1,26 +1,17 @@
-import { home, addCustomer, signIn, ensureToken, getProtectedInfo } from '../controllers/auth-controller';
-// added
-// import { hash } from '../utilities/hashing';
-//added
+import { home, addCustomer, signIn, ensureToken, /* getProtectedInfo */ } from '../controllers/auth-controller';
+
 const routes = (app) => {
     app.route("/")
         .get(home);
 
     app.route("/signUp")
-        .post(async (req, res, next) => {
-            // added
-            // let customer = req.body;
-            // customer.password = await hash(customer.password);
-            /// added
-
-            next();
-        }, addCustomer);
+        .post(addCustomer);
 
         app.route("/signIn")
             .post(signIn);
 
-        app.route("/api/protected")
-            .get(ensureToken, getProtectedInfo);
+        /* app.route("/api/protected")
+            .get(ensureToken, getProtectedInfo); */
 
 }
 
