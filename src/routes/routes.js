@@ -1,18 +1,37 @@
-import { home, addCustomer, signIn, /* ensureToken, getProtectedInfo */ } from '../controllers/auth-controller';
+import httpProxy from 'express-http-proxy';
 
-const routes = (app) => {
-    app.route("/")
+import { home, addCustomer, signIn} from '../controllers/auth-controller';
+
+const tripListServiceProxy = httpProxy('http://localhost:3000');
+const paymentServiceProxy = httpProxy('http://localhost:4000');
+
+export default class Routes{
+    constructor(app){
+        this.app = app;
+    }
+
+    appRoutes(){
+        this.app.route("/")
         .get(home);
 
-    app.route("/signUp")
-        .post(addCustomer);
+        this.app.route("/signUp")
+            .post(addCustomer);
 
-        app.route("/signIn")
+        this.app.route("/signIn")
             .post(signIn);
 
-        /* app.route("/api/protected")
-            .get(ensureToken, getProtectedInfo); */
+        this.app.route("/tripList")
+            .get((req, res) => {
+                tripListServiceProxy(req, res);
+            });      
+        
+        this.app.route("/payments")
+            .get((req, res) => {
+                paymentServiceProxy(req, res);
+            });      
+    }
 
+    routesConfig(){
+        this.appRoutes();
+    }    
 }
-
-export default routes;
