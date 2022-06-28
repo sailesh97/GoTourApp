@@ -7,8 +7,8 @@ require('dotenv').config()
 import CustomerSchema from '../models/customer-model';
 import { TripSchema } from '../models/trip-model';
 import { hash } from '../utilities/hashing';
-
-const Customer = mongoose.model('user', CustomerSchema);
+const userCollectionName = process.env.USER_COLLECTION_NAME;
+const Customer = mongoose.model(userCollectionName, CustomerSchema);
 const Trip = mongoose.model('tripdetailsnew', TripSchema);
 
 async function compare(password, hashedPassword) {

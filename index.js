@@ -5,12 +5,14 @@ import bodyParser from 'body-parser';
 import { logger } from './src/utilities/logger';
 import routes from './src/routes/routes';
 
+require('dotenv').config()
+
 // variable declaration
 const app = express();
-const PORT = 8000;
+const PORT = +process.env.PORT;
 
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost/goTourAppDB', { useNewUrlParser: true });
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true });
 
 // configuration
 app.use(bodyParser.urlencoded({extended: false}));
