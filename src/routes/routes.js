@@ -1,4 +1,4 @@
-import { home, addCustomer, signIn, ensureToken, /* getProtectedInfo */ } from '../controllers/auth-controller';
+import { home, addCustomer, signIn, /* ensureToken, getProtectedInfo */ } from '../controllers/auth-controller';
 
 const routes = (app) => {
     app.route("/")
