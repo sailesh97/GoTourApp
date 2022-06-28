@@ -2,8 +2,11 @@ import httpProxy from 'express-http-proxy';
 
 import { home, addCustomer, signIn} from '../controllers/auth-controller';
 
-const tripListServiceProxy = httpProxy('http://localhost:3000');
-const paymentServiceProxy = httpProxy('http://localhost:4000');
+const tripMicroserviceUrl = process.env.TRIP_MICROSERVICE_URL;
+const tripListServiceProxy = httpProxy(tripMicroserviceUrl);
+
+const paymentMicroserviceUrl = process.env.PAYMENT_MICROSERVICE_URL;
+const paymentServiceProxy = httpProxy(paymentMicroserviceUrl);
 
 export default class Routes{
     constructor(app){
