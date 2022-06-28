@@ -4,7 +4,7 @@ import bodyParser from 'body-parser';
 
 import { logger } from './src/utilities/logger';
 import routes from './src/routes/routes';
-
+// apigateway
 require('dotenv').config()
 
 // variable declaration
