@@ -4,22 +4,14 @@ import jwt from "jsonwebtoken";
 require('dotenv').config()
 
 
-import { CustomerSchema } from '../models/customer-model';
-import { TripSchema } from '../models/trip-model';
-// import { hash } from '../utilities/hashing';
+import CustomerSchema from '../models/customer-model';
+// import { TripSchema } from '../models/trip-model';
+import { hash } from '../utilities/hashing';
 
-const Customer = mongoose.model('user', CustomerSchema);
-const Trip = mongoose.model('tripDetails', TripSchema);
+const userCollectionName = process.env.USER_COLLECTION_NAME;
+const Customer = mongoose.model(userCollectionName, CustomerSchema);
+// const Trip = mongoose.model('tripdetailsnew', TripSchema);
 
-const SALT_ROUNDS = 10;
-async function hash(password) {
-    // console.log("Password", password, SALT_ROUNDS)
-    const salt = await bcrypt.genSalt(SALT_ROUNDS);
-    // console.log("SALT----", salt);
-    const hashedPassword = await bcrypt.hash(password, salt);
-    return hashedPassword;
-}
-// compare password with hashed password
 async function compare(password, hashedPassword) {
     const match = await bcrypt.compare(password, hashedPassword);
     return match;
@@ -28,14 +20,20 @@ async function compare(password, hashedPassword) {
 // add customer - with encryption
 export const addCustomer = async (req, res) => {
     let customer = req.body;
-    // console.log("-------------------------------------Customer-------------------------------------/n",customer)
     customer.password = await hash(customer.password);
     let newCustomer = new Customer(customer);
     try {
         let returnedCustomer = await newCustomer.save();
         res.send(returnedCustomer);
     } catch (err) {
-        res.send(err);
+        if(err.message){
+            res.send({
+                error: err._message,
+                message: err.message
+            })
+        } else{
+            res.send(err);
+        }
     }
 }
 
@@ -47,7 +45,7 @@ export const signIn = async (req, res) => {
         if (validateCustomer) {
             const user = req.body;
             const token = jwt.sign({user}, process.env.JWT_SECRET);
-            res.send({ message: 'User Validated', token: token });
+            res.send({ message: 'User Validated', token: token, customer: returnedCustomer });
         } else{
             res.send({ message: "Sorry not validate credentials :" + req.body.email });
         }
@@ -71,32 +69,27 @@ export const ensureToken = (req, res, next) => {
     }
 }
 
-export const getProtectedInfo = (req, res) => {
+/* export const getProtectedInfo = (req, res) => {
     jwt.verify(req.token, process.env.JWT_SECRET, (err, data) => {
         if(err){
             console.log(err);
             res.sendStatus(403);
         } else{
-
             getAllTrips(res);
-            // res.json({
-            //     msg: "This is a protected route",
-            //     data: data
-            // })
         }
     });
-}
+} */
 
-function getAllTrips(res) {
+/* function getAllTrips(res) {
     Trip.find({}, (err, tripPackagedProvided) => {
         if (err) {
             res.send(err);
         }
-        console.log("Protected  Response", err)
+        console.log("Protected  Response", err, tripPackagedProvided)
         res.json(tripPackagedProvided);
     });
 }
-
+ */
 export const home = (req, res) => {
     res.json({ "message": "Welcome from Express" });
 }

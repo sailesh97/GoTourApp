@@ -1,27 +1,40 @@
-import { home, addCustomer, signIn, ensureToken, getProtectedInfo } from '../controllers/auth-controller';
-// added
-// import { hash } from '../utilities/hashing';
-//added
-const routes = (app) => {
-    app.route("/")
+import httpProxy from 'express-http-proxy';
+
+import { home, addCustomer, signIn} from '../controllers/auth-controller';
+
+const tripMicroserviceUrl = process.env.TRIP_MICROSERVICE_URL;
+const tripListServiceProxy = httpProxy(tripMicroserviceUrl);
+
+const paymentMicroserviceUrl = process.env.PAYMENT_MICROSERVICE_URL;
+const paymentServiceProxy = httpProxy(paymentMicroserviceUrl);
+
+export default class Routes{
+    constructor(app){
+        this.app = app;
+    }
+
+    appRoutes(){
+        this.app.route("/")
         .get(home);
 
-    app.route("/signUp")
-        .post(async (req, res, next) => {
-            // added
-            // let customer = req.body;
-            // customer.password = await hash(customer.password);
-            /// added
+        this.app.route("/signUp")
+            .post(addCustomer);
 
-            next();
-        }, addCustomer);
-
-        app.route("/signIn")
+        this.app.route("/signIn")
             .post(signIn);
 
-        app.route("/api/protected")
-            .get(ensureToken, getProtectedInfo);
+        this.app.route("/tripList")
+            .get((req, res) => {
+                tripListServiceProxy(req, res);
+            });      
+        
+        this.app.route("/payments")
+            .get((req, res) => {
+                paymentServiceProxy(req, res);
+            });      
+    }
 
+    routesConfig(){
+        this.appRoutes();
+    }    
 }
-
-export default routes;

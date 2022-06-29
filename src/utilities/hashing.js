@@ -1,5 +1,8 @@
 import bcrypt from 'bcrypt'
-export const SALT_ROUNDS = 10;
+
+require('dotenv').config()
+
+export const SALT_ROUNDS = +process.env.SALT_ROUNDS;
 
 // bcrypt works
 export async function hash(password) {

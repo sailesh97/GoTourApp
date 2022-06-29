@@ -1,34 +1,33 @@
 import mongoose from 'mongoose';
+import uniqueValidator from 'mongoose-unique-validator';
 
 const Schema = mongoose.Schema;
 
-export const CustomerSchema = new Schema(
+const CustomerSchema = new Schema(
     {
         customerName: {
             type: String,
-            required: "Please enter your fullname."
+            required: "Please enter your fullname.",
+            unique: true
         },
-        phone: {
-            type: Number
-        },
+        phone: Number,
         email: {
-            type: String
-            // unique: true,
-            // required: true,
-            // dropDups: true
+            type: String,
+            unique: true
         },
-        address: {
-            type: String
-        },
+        address: String,
         aadharNo: {
-            type: String
+            type: String,
+            unique: true
         },
-        password: {
-            type: String
-        },
+        password: String,
         creationDate: {
             type: Date,
             default: Date.now
         }
     }
 )
+
+CustomerSchema.plugin(uniqueValidator);
+
+export default CustomerSchema;
